@@ -1,6 +1,4 @@
 #!/bin/bash
-
-# Source the details of hosts, username, and password from an external file
 source host_details.sh
 
 # Function to retry a command
