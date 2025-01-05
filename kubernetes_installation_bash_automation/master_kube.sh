@@ -23,7 +23,9 @@ kube_installation () {
         cat > /etc/modules-load.d/k8s.conf << EOF
 overlay
 br_netfilter
-EOF
+EOF 
+    else:
+        echo "kernel module is already loaded"
     fi
 
     # Configure sysctl for Kubernetes networking
@@ -35,6 +37,8 @@ net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
         sysctl --system
+    else:
+        echo "sysctl is loaded"
     fi
 
     # Disable swap
@@ -54,12 +58,11 @@ EOF
     fi
 
     # Install Go
-    echo "Installing Go programming language..."
-    if ! command -v go &> /dev/null; then
-        wget https://storage.googleapis.com/golang/getgo/installer_linux
-        chmod +x ./installer_linux
-        ./installer_linux
-        source ~/.bash_profile
+    echo "Installing Go programming language and git utility..."
+    if ! command -v go &> /dev/null && ! command -v git &> /dev/null; then
+        yum install -y go git
+    else:
+        echo "both git and go installed already"
     fi
 
     # Build and install cri-dockerd
